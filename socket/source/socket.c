@@ -176,7 +176,7 @@ void setup_server()
             command user_cmd = command_interpreter(command_from_client);
             if (UNKNOWN_COMMAND != user_cmd)
             {
-              printf ("ECHO::Client IP=%s PORT=%d sends \"%d\"\n", inet_ntoa (server.sin_addr), ntohs (server.sin_port), user_cmd);
+              /* All is okay. */
             }
             else
             {
