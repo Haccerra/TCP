@@ -7,11 +7,17 @@
 #include <string.h>
 #include <stdlib.h>
 
+#include <errno.h>
 #include <unistd.h>
+#include <arpa/inet.h>
+#include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
+#include <sys/time.h>
 
 #define __MAX__NUMBER__OF__CLIENTS__AVAILABLE__TO__CONNECT__ 0x04u
+
+#define __BUFFER__SIZE__ 256
 
 #define CONNECTION_DOMAIN   AF_INET         /* IPv4 */
 #define CONNECTION_TYPE     SOCK_STREAM     /* TCP */
@@ -23,6 +29,11 @@
 #define CONNECT_WITH_ID_2               0x02u
 #define CONNECT_WITH_ID_3               0x03u
 #define CONNECT_WITH_ID_4               0x04u
+
+#define DO_NOT_USE_ANY_FLAGS            0x00u
+#define CLIENT_INACTIVE                 0x00u
+
+#define PROTOCOL_0                      0x00u
 
 struct user_input
 {
