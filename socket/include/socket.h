@@ -2,6 +2,7 @@
 #define __SOCKET__
 
 #include "../../platform/platform.h"
+#include "../../parser/include/interpreter.h"
 
 #include <stdio.h>
 #include <string.h>

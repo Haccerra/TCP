@@ -109,10 +109,11 @@ void setup_server()
 
       /* Check whether server is active and new client is to connect. */
       boolean verify_server_did_not_disconnect = FD_ISSET (server_socket, &read_file_descriptor_on_change);
+      int accept_client = 0x00;
       if (FALSE != verify_server_did_not_disconnect)
       {
         /* Great! */
-        int accept_client = accept (server_socket, (struct sockaddr*)&server, (socklen_t*)&sizeofserver);
+        accept_client = accept (server_socket, (struct sockaddr*)&server, (socklen_t*)&sizeofserver);
         if ((int)ERROR > accept_client)
         {
           /* (int)ERROR occured. */
@@ -126,9 +127,13 @@ void setup_server()
         int send_response = send (accept_client, server_response, strlen (server_response), DO_NOT_USE_ANY_FLAGS);
         if (strlen (server_response) != send_response)
         {
-          /* (int)ERROR occured. */
+          /* ERROR occured. */
           fprintf (stderr, "ERR::Something happened with the data transfer. Abort.\n");
           exit ((int)ERROR);
+        }
+        else
+        {
+          /* No problem detected. */
         }
 
         /* Add a new client to the list of clients. */
@@ -167,7 +172,16 @@ void setup_server()
           {
             /* Message received successfully. Send for interpolation. */
             command_from_client[is_connected] = '\0';   /* is_connected also contains number of characters send by client. */
-            printf ("ECHO::Client IP=%s PORT=%d sends \"%s\"\n", inet_ntoa (server.sin_addr), ntohs (server.sin_port), command_from_client);
+
+            command user_cmd = command_interpreter(command_from_client);
+            if (UNKNOWN_COMMAND != user_cmd)
+            {
+              printf ("ECHO::Client IP=%s PORT=%d sends \"%d\"\n", inet_ntoa (server.sin_addr), ntohs (server.sin_port), user_cmd);
+            }
+            else
+            {
+              /* Invalid argument. */
+            }
           }
         }
         else
@@ -212,7 +226,7 @@ void setup_client()
   }
   else
   {
-    /* (int)ERROR. Abort. */
+    /* ERROR. Abort. */
     fprintf (stderr, "ERR::Could not receive valid data from server. Disconnecting...\n");
     exit ((int)ERROR);
   }
@@ -227,15 +241,42 @@ void setup_client()
     int loopback_data = send (client_socket, client2server, strlen (client2server), DO_NOT_USE_ANY_FLAGS);
     if (loopback_data != strlen (client2server))
     {
-      /* (int)ERROR occured. */
+      /* ERROR occured. */
       fprintf (stderr, "ERR::Transmission data from the server failed. Aborting client connection.\n");
       exit ((int)ERROR);
     }
     else
     {
       /* All is good. */
+      command is_command_okay = command_interpreter(client2server);
+      if (UNKNOWN_COMMAND == is_command_okay)
+      {
+        printf ("ECHO::Invalid command!\n");
+        printf ("ECHO::Please use following:\n");
+        printf ("\t\t::W(8) S(2) A(4) D(6) or;\n");
+        printf ("\t\t::1 3 7 9 for diagonal movement of the square or;\n");
+        printf ("\t\t::C or 5 to centre the square or;\n");
+        printf ("\t\t::Q or 0 to close the connection.\n\n");
+      }
+      else
+      {
+        if (
+             (RET_OK == strcmp ("Q", client2server)) ||
+             (RET_OK == strcmp ("0", client2server))
+           )
+        {
+          /* Stop the programme. */
+          close (client_socket);
+          exit (VALID);
+          break;
+        }
+        else
+        {
+          /* Do nothing. */
+        }
+      }
     }
   }
 
-  close (client_socket);
+  close (client_socket);  /* Unreachable. */
 }

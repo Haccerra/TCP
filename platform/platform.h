@@ -11,6 +11,7 @@
 #define stream      char**
 #define socket_type uint8_t
 #define id          uint8_t
+#define command     char
 
 #define FALSE      0x00u
 #define TRUE       0x01u
