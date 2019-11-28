@@ -2,7 +2,10 @@
 #define __SOCKET__
 
 #include "../../platform/platform.h"
+#include "../../parser/include/compiler.h"
 #include "../../parser/include/interpreter.h"
+#include "../../draw-func/include/draw.h"
+#include "../../libraries/include/drawlib.h"
 
 #include <stdio.h>
 #include <string.h>

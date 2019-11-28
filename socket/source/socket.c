@@ -2,6 +2,9 @@
 
 extern struct user_input parsed_user_commands;
 
+struct rectangle rect[__MAX__NUMBER__OF__CLIENTS__AVAILABLE__TO__CONNECT__];
+
+boolean has_change_on_graphics_occured = FALSE;
 char command_from_client[__BUFFER__SIZE__];
 
 void setup_server()
@@ -32,7 +35,7 @@ void setup_server()
 
   server.sin_family      = AF_INET;
   server.sin_port        = htons (parsed_user_commands.PORT);
-  server.sin_addr.s_addr = INADDR_ANY;
+  server.sin_addr.s_addr = inet_addr(parsed_user_commands.IP); //INADDR_ANY;
 
   int bind_socket = bind (server_socket, (struct sockaddr*)&server, sizeof (server));
   if ((int)ERROR > bind_socket)
@@ -122,6 +125,16 @@ void setup_server()
         }
         printf ("ECHO::New connection received from IP=%s, PORT=%d\n", inet_ntoa (server.sin_addr), ntohs (server.sin_port));
 
+        int safe_id = -1;
+        for (uint8 i = 0x00u; __MAX__NUMBER__OF__CLIENTS__AVAILABLE__TO__CONNECT__ > i; i++)
+        {
+          if (CLIENT_INACTIVE == client_socket[i])
+          {
+            safe_id = i;
+            break;
+          }
+        }
+
         char server_response[__BUFFER__SIZE__] = "You have successfully connected.\nPlease use WASD to move rectangle or Q to abort the connection.\n\n";
 
         int send_response = send (accept_client, server_response, strlen (server_response), DO_NOT_USE_ANY_FLAGS);
@@ -142,6 +155,11 @@ void setup_server()
           if (CLIENT_INACTIVE == client_socket[i])
           {
             client_socket[i] = accept_client;
+            rect[i].is_alive = TRUE;
+
+            has_change_on_graphics_occured = TRUE;
+            update_rectangle(CENTRE_COMMAND, i);
+
             break;
           }
         }
@@ -167,6 +185,10 @@ void setup_server()
             printf ("ECHO::Client from IP=%s PORT=%d disconnected.\n", inet_ntoa (server.sin_addr), ntohs (server.sin_port));
 
             client_socket[i] = CLIENT_INACTIVE;
+            rect[i].is_alive = FALSE;
+
+            has_change_on_graphics_occured = TRUE;
+            update_rectangle(DESTROY_ON_DISCONNECTION, i);
           }
           else
           {
@@ -177,6 +199,11 @@ void setup_server()
             if (UNKNOWN_COMMAND != user_cmd)
             {
               /* All is okay. */
+              if (rect[i].is_alive)
+              {
+                has_change_on_graphics_occured = TRUE;
+                update_rectangle(user_cmd, i);
+              }
             }
             else
             {
@@ -188,7 +215,17 @@ void setup_server()
         {
           /* Ignore. Nothing of relevance occured. */
         }
+        if (FALSE != has_change_on_graphics_occured)
+        {
+          update_graphics();
+        }
+        else
+        {
+          /* Do nothing. */
+        }
+        has_change_on_graphics_occured = FALSE;
       }
+      has_change_on_graphics_occured = FALSE;
   }
 }
 
@@ -202,7 +239,7 @@ void setup_client()
 
   client.sin_family      = AF_INET;
   client.sin_port        = htons (parsed_user_commands.PORT);
-  client.sin_addr.s_addr = INADDR_ANY;
+  client.sin_addr.s_addr = inet_addr(parsed_user_commands.IP); //INADDR_ANY;
 
   int connection_status = connect (client_socket, (struct sockaddr*)&client, sizeof (client));
   if ((int)ERROR > connection_status)

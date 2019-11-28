@@ -2,21 +2,30 @@
 #define __DRAW__
 
 #include "../../platform/platform.h"
-#include "../../socket/include/socket.h"
+#include "../../parser/include/compiler.h"
 #include "../../parser/include/interpreter.h"
 
-#define __SCREEN__BOUNDS__X__ 640
-#define __SCREEN__BOUNDS__Y__ 480
+#define COORDINATE_0            0u
+
+#define __SQUARE__PIXSIZE__    40u
+
+#define __SCREEN__BOUNDS__X__ 640u
+#define __SCREEN__BOUNDS__Y__ 480u
 
 #define BLACK_COLOUR 0x0000u
 #define RED_COLOUR   0xF800u
 #define BLUE_COLOUR  0x001Fu
 
-#define UP          +0x0A
-#define DOWN        -0x0A
+#define UP          -0x0A
+#define DOWN        +0x0A
 #define LEFT        -0x0A
 #define RIGHT       +0x0A
 #define NONE        +0x00
+
+#define USER_1      0x00u
+#define USER_2      0x01u
+#define USER_3      0x02u
+#define USER_4      0x03u
 
 struct rectangle
 {
@@ -28,7 +37,7 @@ struct rectangle
 };
 
 extern unsigned int image_matrix[__SCREEN__BOUNDS__Y__][__SCREEN__BOUNDS__X__];
-extern struct rectangle moving_rectangles[__MAX__NUMBER__OF__CLIENTS__AVAILABLE__TO__CONNECT__];
+extern struct rectangle rect[4];
 
 void update_rectangle(command, uint8);
 boolean instantialise_scene(void);
