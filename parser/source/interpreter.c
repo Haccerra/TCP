@@ -1,5 +1,7 @@
 #include "../include/interpreter.h"
 
+#include <stdio.h>
+
 command command_interpreter(string client_cmd)
 {
   uint8 cmd_length = strlen (client_cmd);
@@ -57,7 +59,7 @@ command command_interpreter(string client_cmd)
         case '3':
         case '7':
         case '9':
-        case '\n':
+        case '.':
         {
           goto label_advanced_movement;
         } break;
@@ -124,7 +126,7 @@ command command_interpreter(string client_cmd)
       {
         /* Do nothing. */
       }
-      if (RET_OK == strcmp ("\n", client_cmd))
+      if (RET_OK == strcmp (".", client_cmd))
       {
         return REPEAT_COMMAND;
       }
