@@ -17,6 +17,7 @@
 #define UP_LEFT_COMMAND          0x07
 #define UP_RIGHT_COMMAND         0x09
 #define DESTROY_ON_DISCONNECTION 0x0A
+#define REPEAT_COMMAND           0x0B
 
 #define ALLOWED_LENGTH     0x02u
 #define BASIC_MOVEMENT     0x01u

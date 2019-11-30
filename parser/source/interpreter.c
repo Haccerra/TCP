@@ -57,6 +57,7 @@ command command_interpreter(string client_cmd)
         case '3':
         case '7':
         case '9':
+        case '\n':
         {
           goto label_advanced_movement;
         } break;
@@ -118,6 +119,14 @@ command command_interpreter(string client_cmd)
          )
       {
         return DOWN_RIGHT_COMMAND;
+      }
+      else
+      {
+        /* Do nothing. */
+      }
+      if (RET_OK == strcmp ("\n", client_cmd))
+      {
+        return REPEAT_COMMAND;
       }
       else
       {

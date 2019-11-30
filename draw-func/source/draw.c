@@ -243,6 +243,7 @@ static void destroy_rectangle(uint8 id)
         TRUE
       );
     }
+    update_graphics();
   }
   else
   {
@@ -254,54 +255,126 @@ static void destroy_rectangle(uint8 id)
 
 void update_rectangle(command update, uint8 id)
 {
+  static int last_used_command[__MAX__NUMBER__OF__CLIENTS__AVAILABLE__TO__CONNECT__] = {
+    UNKNOWN_COMMAND,
+    UNKNOWN_COMMAND,
+    UNKNOWN_COMMAND,
+    UNKNOWN_COMMAND
+  };
+
   if (FALSE != rect[id].is_alive)
   {
     switch (update)
     {
       case UP_COMMAND:
       {
+        up_command_jump:
+
         refresh_rectangle(NONE, UP, id);
+        last_used_command[id] = UP_COMMAND;
       } break;
       case DOWN_COMMAND:
       {
+        down_command_jump:
+
+        last_used_command[id] = DOWN_COMMAND;
         refresh_rectangle(NONE, DOWN, id);
       } break;
       case LEFT_COMMAND:
       {
+        left_command_jump:
+
         refresh_rectangle(LEFT, NONE, id);
+        last_used_command[id] = LEFT_COMMAND;
       } break;
       case RIGHT_COMMAND:
       {
+        right_command_jump:
+
         refresh_rectangle(RIGHT, NONE, id);
+        last_used_command[id] = RIGHT_COMMAND;
       } break;
       case UP_LEFT_COMMAND:
       {
+        up_left_command_jump:
+
         refresh_rectangle(UP, LEFT, id);
+        last_used_command[id] = UP_LEFT_COMMAND;
       } break;
       case UP_RIGHT_COMMAND:
       {
+        up_right_command_jump:
+
         refresh_rectangle(-UP, -RIGHT, id);
+        last_used_command[id] = UP_RIGHT_COMMAND;
       } break;
       case DOWN_LEFT_COMMAND:
       {
+        down_left_command_jump:
+
         refresh_rectangle(-DOWN, -LEFT, id);
+        last_used_command[id] = DOWN_LEFT_COMMAND;
       } break;
       case DOWN_RIGHT_COMMAND:
       {
+        down_right_command_jump:
+
         refresh_rectangle(DOWN, RIGHT, id);
+        last_used_command[id] = DOWN_RIGHT_COMMAND;
       } break;
       case CENTRE_COMMAND:
       {
+        last_used_command[id] = CENTRE_COMMAND;    /* Special case. Does not have repetition of command. */
         draw_rectangle_at_centre(id);
       } break;
       case DESTROY_ON_DISCONNECTION:
       {
+        last_used_command[id] = UNKNOWN_COMMAND;    /* Special case. */
         destroy_rectangle(id);
+      } break;
+      case REPEAT_COMMAND:
+      {
+        if (UP_COMMAND == last_used_command[id])
+        {
+          goto up_command_jump;
+        }
+        else if (DOWN_COMMAND == last_used_command[id])
+        {
+          goto down_command_jump;
+        }
+        else if (LEFT_COMMAND == last_used_command[id])
+        {
+          goto left_command_jump;
+        }
+        else if (RIGHT_COMMAND == last_used_command[id])
+        {
+          goto right_command_jump;
+        }
+        else if (UP_LEFT_COMMAND == last_used_command[id])
+        {
+          goto up_left_command_jump;
+        }
+        else if (UP_RIGHT_COMMAND == last_used_command[id])
+        {
+          goto up_right_command_jump;
+        }
+        else if (DOWN_LEFT_COMMAND == last_used_command[id])
+        {
+          goto down_left_command_jump;
+        }
+        else if (DOWN_RIGHT_COMMAND == last_used_command[id])
+        {
+          goto down_right_command_jump;
+        }
+        else
+        {
+          /* Ignore. */
+        }
       } break;
       default:
       {
         /* Do nothing. */
-      }
+      } break;
     }
   }
   else
