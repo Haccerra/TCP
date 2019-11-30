@@ -136,8 +136,22 @@ void setup_server()
         }
 
         char server_response[__BUFFER__SIZE__] = "You have successfully connected.\nPlease use WASD to move rectangle or Q to abort the connection.\n\n";
+        char server_full[__BUFFER__SIZE__] = "Server is busy. You cannot be accepted at the moment. Try later.\n\n";
+        int send_response;
+        if (
+             CLIENT_INACTIVE == client_socket[0] ||
+             CLIENT_INACTIVE == client_socket[1] ||
+             CLIENT_INACTIVE == client_socket[2] ||
+             CLIENT_INACTIVE == client_socket[3]
+           )
+        {
+          send_response = send (accept_client, server_response, strlen (server_response), DO_NOT_USE_ANY_FLAGS);
+        }
+        else
+        {
+          send_response = send (accept_client, server_full, strlen (server_response), DO_NOT_USE_ANY_FLAGS);
+        }
 
-        int send_response = send (accept_client, server_response, strlen (server_response), DO_NOT_USE_ANY_FLAGS);
         if (strlen (server_response) != send_response)
         {
           /* ERROR occured. */
@@ -266,6 +280,15 @@ void setup_client()
     /* ERROR. Abort. */
     fprintf (stderr, "ERR::Could not receive valid data from server. Disconnecting...\n");
     exit ((int)ERROR);
+  }
+
+  if ('S' == server_response[0])
+  {
+    exit ((int)ERROR);
+  }
+  else
+  {
+    /* Client could be connected. All is okay. */
   }
 
   /* Send information. */

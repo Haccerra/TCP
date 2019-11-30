@@ -212,6 +212,7 @@ static void destroy_rectangle(uint8 id)
         239,                //(uint16)(1/2)*(__SCREEN__BOUNDS__Y__)-1,
         TRUE
       );
+      update_graphics();
     }
     if (USER_2 == id)
     {
@@ -222,6 +223,7 @@ static void destroy_rectangle(uint8 id)
         239,                //(uint16)(1/2)*(__SCREEN__BOUNDS__Y__)-1,
         TRUE
       );
+      update_graphics();
     }
     if (USER_3 == id)
     {
@@ -232,6 +234,7 @@ static void destroy_rectangle(uint8 id)
         __SCREEN__BOUNDS__Y__,
         TRUE
       );
+      update_graphics();
     }
     if (USER_4 == id)
     {
@@ -242,8 +245,8 @@ static void destroy_rectangle(uint8 id)
         __SCREEN__BOUNDS__Y__,
         TRUE
       );
+      update_graphics();
     }
-    update_graphics();
   }
   else
   {
