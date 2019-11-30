@@ -181,6 +181,15 @@ static void draw_rectangle_at_centre(uint8 id)
     {
       /* Unreachable. */
     }
+    destroy_rectangle(id);
+    draw_rectangle(
+      rect[id].x_beg,
+      rect[id].x_end,
+      rect[id].y_beg,
+      rect[id].y_end,
+      FALSE
+    );
+    update_graphics();
   }
   else
   {
@@ -271,11 +280,11 @@ void update_rectangle(command update, uint8 id)
       } break;
       case UP_RIGHT_COMMAND:
       {
-        refresh_rectangle(UP, RIGHT, id);
+        refresh_rectangle(-UP, -RIGHT, id);
       } break;
       case DOWN_LEFT_COMMAND:
       {
-        refresh_rectangle(DOWN, LEFT, id);
+        refresh_rectangle(-DOWN, -LEFT, id);
       } break;
       case DOWN_RIGHT_COMMAND:
       {
