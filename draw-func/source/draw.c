@@ -311,4 +311,6 @@ boolean instantialise_scene(void)
   set_background_colour();
   draw_horizontal_line(COORDINATE_0, __SCREEN__BOUNDS__X__, 240);
   draw_vertical_line(COORDINATE_0,   __SCREEN__BOUNDS__Y__, 320);
+
+  update_graphics();
 }

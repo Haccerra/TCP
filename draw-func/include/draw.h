@@ -4,6 +4,7 @@
 #include "../../platform/platform.h"
 #include "../../parser/include/compiler.h"
 #include "../../parser/include/interpreter.h"
+#include "../../libraries/include/drawlib.h"
 
 #define COORDINATE_0            0u
 

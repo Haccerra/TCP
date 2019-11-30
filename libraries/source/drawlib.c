@@ -4,7 +4,7 @@
 
 extern unsigned int image_matrix[__SCREEN__BOUNDS__Y__][__SCREEN__BOUNDS__X__];
 
-#define __HOME__
+/* #define __HOME__ */
 
 #if !defined(__HOME__)
 void update_graphics()
