@@ -201,8 +201,8 @@ void setup_server()
             client_socket[i] = CLIENT_INACTIVE;
             rect[i].is_alive = FALSE;
 
-            //has_change_on_graphics_occured = TRUE;
-            //update_rectangle(DESTROY_ON_DISCONNECTION, i);
+            has_change_on_graphics_occured = TRUE;
+            update_rectangle(DESTROY_ON_DISCONNECTION, i);
           }
           else
           {
